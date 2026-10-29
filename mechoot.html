@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interativo - Engenharia Mecânica | CEP Itajubá</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0A192F;
+            --secondary: #1E3A8A;
+            --accent: #3B82F6;
+            --gold: #F59E0B;
+            --gold-hover: #D97706;
+            --dark: #030712;
+            --light: #F8FAFC;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary) 0%, #020617 100%);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.9);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--light);
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            color: var(--gold);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #94A3B8;
+            margin-bottom: 30px;
+        }
+
+        .badge-instituicao {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            border: 2px solid #334155;
+            background: #020617;
+            color: var(--light);
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .btn {
+            background: var(--gold);
+            color: var(--dark);
+            border: none;
+            padding: 16px 32px;
+            font-size: 1.2rem;
+            font-weight: 900;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--gold-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+            box-shadow: none;
+        }
+
+        .player-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin: 25px 0;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(2, 6, 23, 0.6);
+            border-radius: 12px;
+            border: 1px solid #1E293B;
+        }
+
+        .player-chip {
+            background: var(--secondary);
+            color: var(--light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid var(--accent);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 25px;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 15px 25px;
+            border-radius: 14px;
+            border: 1px solid #1E293B;
+        }
+
+        .timer-box {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--gold);
+            background: rgba(245, 158, 11, 0.1);
+            padding: 8px 20px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+        }
+
+        .question-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 35px;
+            line-height: 1.4;
+            color: var(--light);
+        }
+
+        .answers-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .answer-btn {
+            padding: 25px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 14px;
+            color: white;
+            cursor: pointer;
+            min-height: 110px;
+            transition: transform 0.1s;
+        }
+
+        .answer-btn:hover { transform: scale(1.02); }
+
+        .ans-0 { background: #EF4444; } 
+        .ans-1 { background: #3B82F6; } 
+        .ans-2 { background: #F59E0B; } 
+        .ans-3 { background: #10B981; }
+
+        .leaderboard-list {
+            list-style: none;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.7);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .hidden { display: none !important; }
+
+        .pin-box {
+            background: rgba(2, 6, 23, 0.8);
+            border: 2px dashed var(--accent);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .pin-number {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--gold);
+            letter-spacing: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+        <!-- TELA INICIAL -->
+        <div id="screen-home" class="card">
+            <div class="badge-instituicao">Engenharia Mecânica</div>
+            <h1>Quiz <span>Mecânico</span></h1>
+            <p class="subtitle">Teste seus conhecimentos nos 4 pilares da Engenharia</p>
+
+            <button class="btn" onclick="app.showHostSetup()">🎮 Modo Apresentador (Host)</button>
+            <button class="btn btn-secondary" onclick="app.showPlayerJoin()">🚀 Entrar como Jogador</button>
+        </div>
+
+        <!-- HOST SETUP -->
+        <div id="screen-host-setup" class="card hidden">
+            <div class="badge-instituicao">Painel do Professor</div>
+            <h1>Sala de Jogo</h1>
+            <div class="pin-box">
+                <div style="font-size: 0.85rem; color: #94A3B8;">PIN DA SALA</div>
+                <div class="pin-number">7492</div>
+            </div>
+            <div style="font-size: 1rem; font-weight: 700; margin-bottom: 10px;">Alunos Conectados (<span id="player-count">0</span>):</div>
+            <div class="player-list" id="host-player-list">
+                <span style="color: #64748B;">Aguardando alunos entrarem...</span>
+            </div>
+            <button class="btn" onclick="app.startQuiz()" id="start-btn" disabled style="opacity: 0.5;">Iniciar Batalha</button>
+            <button class="btn btn-secondary" onclick="app.showHome()">Voltar</button>
+        </div>
+
+        <!-- PLAYER JOIN -->
+        <div id="screen-player-join" class="card hidden">
+            <div class="badge-instituicao">Área do Aluno</div>
+            <h1>Entrar no Jogo</h1>
+            <input type="text" id="input-pin" placeholder="PIN da Sala (7492)" maxlength="4">
+            <input type="text" id="input-name" placeholder="Seu Nome / Apelido" maxlength="20">
+            <button class="btn" onclick="app.joinGame()">Entrar na Partida</button>
+            <button class="btn btn-secondary" onclick="app.showHome()">Voltar</button>
+        </div>
+
+        <!-- WAITING -->
+        <div id="screen-player-waiting" class="card hidden">
+            <div class="badge-instituicao">Você está dentro!</div>
+            <h1 id="waiting-name-display">Jogador</h1>
+            <p class="subtitle" style="margin-top: 20px;">Aguarde o professor iniciar o quiz no telão da sala.</p>
+        </div>
+
+        <!-- GAME -->
+        <div id="screen-game" class="card hidden">
+            <div class="game-header">
+                <div id="lbl-q-counter" style="font-weight: 700; color: #94A3B8;">Questão 1</div>
+                <div class="timer-box" id="lbl-timer">20</div>
+            </div>
+            <div class="question-text" id="lbl-question">Carregando pergunta...</div>
+            <div class="answers-grid" id="answers-container"></div>
+        </div>
+
+        <!-- RESULT -->
+        <div id="screen-result" class="card hidden">
+            <h1>Placar Parcial</h1>
+            <ul class="leaderboard-list" id="leaderboard-ranking"></ul>
+            <button class="btn" id="next-question-btn" onclick="app.nextQuestion()">Próxima Pergunta ➔</button>
+        </div>
+
+        <!-- FINAL -->
+        <div id="screen-final" class="card hidden">
+            <h1>Podium Final 🏆</h1>
+            <ul class="leaderboard-list" id="final-ranking"></ul>
+            <button class="btn" onclick="app.showHome()">Jogar Novamente</button>
+        </div>
+    </div>
+
+    <script>
+        const questionsData = [
+            { theme: "Termodinâmica", question: "Qual ciclo termodinâmico ideal é a base para as usinas termelétricas?", answers: ["Ciclo Otto", "Ciclo Diesel", "Ciclo Rankine", "Ciclo Brayton"], correct: 2 },
+            { theme: "Processos", question: "No CNC, qual parâmetro relaciona-se à velocidade tangencial?", answers: ["Avanço", "Velocidade de Corte (Vc)", "Profundidade", "Torque"], correct: 1 },
+            { theme: "Fluidos", question: "Qual fenômeno hidráulico forma bolhas de vapor que colapsam nas bombas?", answers: ["Golpe de Aríete", "Cavitação", "Venturi", "Viscosidade"], correct: 1 },
+            { theme: "Robótica", question: "Quantos graus de liberdade mínimos são necessários para alcançar qualquer ponto 3D?", answers: ["2 DoF", "3 DoF", "4 DoF", "6 DoF"], correct: 1 }
+        ];
+
+        class KahootGame {
+            constructor() {
+                this.pin = "7492";
+                this.players = [];
+                this.qIdx = 0;
+                this.score = 0;
+                this.timer = 20;
+                this.tInt = null;
+                this.name = "";
+                this.answered = false;
+            }
+
+            showHome() {
+                this.hideAll();
+                document.getElementById('screen-home').classList.remove('hidden');
+            }
+
+            showHostSetup() {
+                this.hideAll();
+                document.getElementById('screen-host-setup').classList.remove('hidden');
+                this.updateList();
+            }
+
+            showPlayerJoin() {
+                this.hideAll();
+                document.getElementById('screen-player-join').classList.remove('hidden');
+            }
+
+            joinGame() {
+                const pinInput = document.getElementById('input-pin').value;
+                this.name = document.getElementById('input-name').value;
+                if(pinInput !== this.pin) { alert('PIN incorreto!'); return; }
+                if(!this.name) { alert('Digite seu nome!'); return; }
+
+                this.players.push({name: this.name, score: 0});
+                this.hideAll();
+                document.getElementById('screen-player-waiting').classList.remove('hidden');
+                document.getElementById('waiting-name-display').innerText = `Olá, ${this.name}!`;
+                
+                setTimeout(() => { 
+                    this.players.push({name: "Carlos (Bot)", score: 0}); 
+                    this.updateList(); 
+                }, 1000);
+            }
+
+            updateList() {
+                const list = document.getElementById('host-player-list');
+                list.innerHTML = this.players.map(p => `<div class="player-chip">👤 ${p.name}</div>`).join('');
+                document.getElementById('player-count').innerText = this.players.length;
+                document.getElementById('start-btn').disabled = false;
+                document.getElementById('start-btn').style.opacity = "1";
+            }
+
+            startQuiz() {
+                this.qIdx = 0;
+                this.score = 0;
+                this.loadQ();
+            }
+
+            loadQ() {
+                this.hideAll();
+                document.getElementById('screen-game').classList.remove('hidden');
+                this.answered = false;
+
+                const q = questionsData[this.qIdx];
+                document.getElementById('lbl-q-counter').innerText = `${q.theme} (${this.qIdx+1}/${questionsData.length})`;
+                document.getElementById('lbl-question').innerText = q.question;
+                document.getElementById('answers-container').innerHTML = q.answers.map((ans, idx) => `
+                    <button class="answer-btn ans-${idx}" onclick="app.ans(${idx})">${ans}</button>
+                `).join('');
+
+                this.timer = 20;
+                document.getElementById('lbl-timer').innerText = this.timer;
+                clearInterval(this.tInt);
+                this.tInt = setInterval(() => {
+                    this.timer--;
+                    document.getElementById('lbl-timer').innerText = this.timer;
+                    if(this.timer <= 0) {
+                        clearInterval(this.tInt);
+                        this.showRes();
+                    }
+                }, 1000);
+            }
+
+            ans(idx) {
+                if(this.answered) return;
+                this.answered = true;
+                clearInterval(this.tInt);
+
+                if(idx === questionsData[this.qIdx].correct) {
+                    this.score += 500;
+                }
+                this.showRes();
+            }
+
+            showRes() {
+                this.hideAll();
+                document.getElementById('screen-result').classList.remove('hidden');
+                document.getElementById('leaderboard-ranking').innerHTML = this.players.map(p => `
+                    <li class="leaderboard-item"><span>${p.name}</span><span>${this.score} pts</span></li>
+                `).join('');
+            }
+
+            nextQuestion() {
+                this.qIdx++;
+                if(this.qIdx < questionsData.length) {
+                    this.loadQ();
+                } else {
+                    this.hideAll();
+                    document.getElementById('screen-final').classList.remove('hidden');
+                    document.getElementById('final-ranking').innerHTML = this.players.map(p => `
+                        <li class="leaderboard-item"><span>🏆 ${p.name}</span><span>${this.score} pts</span></li>
+                    `).join('');
+                }
+            }
+
+            hideAll() {
+                ['screen-home', 'screen-host-setup', 'screen-player-join', 'screen-player-waiting', 'screen-game', 'screen-result', 'screen-final'].forEach(id => {
+                    document.getElementById(id).classList.add('hidden');
+                });
+            }
+        }
+
+        const app = new KahootGame();
+    </script>
+</body>
+</html>
